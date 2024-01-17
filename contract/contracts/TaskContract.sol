@@ -36,8 +36,12 @@ contract TaskContract {
         emit AddTask(assignedTo, taskId);
     }
 
-    function getMyTasks() external view returns (Task[] memory) {
-        return tasksAssigned[msg.sender];
+  function getMyTasks() external view returns (Task[] memory) {
+        Task[] memory myTasks = new Task[](tasksAssigned[msg.sender].length);
+        for (uint i = 0; i < tasksAssigned[msg.sender].length; i++) {
+            myTasks[i] = tasksAssigned[msg.sender][i];
+        }
+        return myTasks;
     }
 
     function completeTask(uint taskId) external {
