@@ -8,43 +8,44 @@ contract TaskContract {
 
     struct Task {
         uint id;
-        address username;
+        address assignedTo;
         string taskText;
         bool isCompleted;
     }
 
     Task[] private tasks;
 
-    mapping(uint256 => address) taskToOwner;
+    mapping(address => Task[]) tasksAssigned;
 
-    function addTask(string memory taskText, bool isCompleted) external {
+    address public admin;
+
+    constructor() {
+        admin = msg.sender;
+    }
+
+    function addTask(
+        string memory taskText,
+        bool isCompleted,
+        address assignedTo
+    ) external {
         uint taskId = tasks.length;
-        tasks.push(Task(taskId, msg.sender, taskText, isCompleted));
-        taskToOwner[taskId] = msg.sender;
-        emit AddTask(msg.sender, taskId);
+        tasks.push(Task(taskId, assignedTo, taskText, isCompleted));
+        tasksAssigned[assignedTo].push(
+            Task(taskId, assignedTo, taskText, isCompleted)
+        );
+        emit AddTask(assignedTo, taskId);
     }
 
     function getMyTasks() external view returns (Task[] memory) {
-        Task[] memory temporary = new Task[](tasks.length);
-        uint counter = 0;
-        for (uint i = 0; i < tasks.length; i++) {
-            if (taskToOwner[i] == msg.sender && tasks[i].isCompleted == false) {
-                temporary[counter] = tasks[i];
-                counter++;
-            }
-        }
-
-        Task[] memory result = new Task[](counter);
-        for (uint i = 0; i < counter; i++) {
-            result[i] = temporary[i];
-        }
-        return result;
+        return tasksAssigned[msg.sender];
     }
 
-    function completeTask(uint taskId, bool isCompleted) external {
-        if (taskToOwner[taskId] == msg.sender) {
-            tasks[taskId].isCompleted = isCompleted;
-            emit CompleteTask(taskId, isCompleted);
-        }
+    function completeTask(uint taskId) external {
+        require(
+            msg.sender == tasks[taskId].assignedTo,
+            "Only assigned user can complete task"
+        );
+        tasks[taskId].isCompleted = true;
+        emit CompleteTask(taskId, true);
     }
 }
