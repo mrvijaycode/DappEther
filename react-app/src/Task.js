@@ -2,17 +2,16 @@ import { List, ListItem, ListItemAvatar, ListItemText, Checkbox } from '@mui/mat
 import CheckIcon from '@mui/icons-material/Check';
 import './Task.css';
 
-const Task = ({ taskText, isCompleted, onClick }) => {
+const Task = ({ taskText, onClick }) => {
     return (
         <List className="todo__list">
             <ListItem>
                 <ListItemAvatar />
                 <ListItemText
-                    primary={`${taskText} ${isCompleted ? '(Completed)' : '(Pending)'}`}
+                    primary={`${taskText}`}
                 />
             </ListItem>
             <Checkbox
-                checked={isCompleted}
                 onClick={onClick}
             />
         </List>
