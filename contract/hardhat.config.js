@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require('dotenv').config()
+//import('hardhat/config').HardhatUserConfig
 
 
 // https://hardhat.org/guides/create-task.html
@@ -12,12 +13,11 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 });
 
 
-
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
-  solidity: "0.8.4",
+  solidity: "0.8.19",
   networks: {
     sepolia: {
       url: process.env.ALCHEMY_SEPOLIA_URL,
