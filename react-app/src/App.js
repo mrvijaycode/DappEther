@@ -53,10 +53,10 @@ function App() {
       let chainId = await ethereum.request({ method: 'eth_chainId'})
       console.log('Connected to chain:' + chainId)
 
-      const rinkebyChainId = '0x4'
+      const sepoliaChainId = '0xaa36a7'
 
-      if (chainId !== rinkebyChainId) {
-        alert('You are not connected to the Rinkeby Testnet!')
+      if (chainId !== sepoliaChainId) {
+        alert('You are not connected to the Sepolia Testnet!')
         return
       } else {
         setCorrectNetwork(true);
@@ -91,11 +91,12 @@ function App() {
           signer
         )
 
-        TaskContract.addTask(task.taskText, task.isCompleted)
-        .then(response => {
-          setTasks([...tasks, task]);
-          console.log("Completed Task");
-        })
+        TaskContract.addTask(task.taskText, false, currentAccount)
+          .then(response => {
+            setTasks([...tasks, task]);
+            console.log("Completed Task");
+          })
+
         .catch(err => {
           console.log("Error occured while adding a new task");
         });
@@ -125,7 +126,7 @@ function App() {
           signer
         )
 
-        let completeTaskTx = await TaskContract.completeTask(key, true);
+        let completeTaskTx = await TaskContract.completeTask(key);
         let allTasks = await TaskContract.getMyTasks();
         setTasks(allTasks);
       } else {
@@ -148,7 +149,7 @@ function App() {
   </button>
   ) : correctNetwork ? (
     <div className="App">
-      <h2> Task Management App</h2>
+      <h2> Valuelabs test</h2>
       <form>
          <TextField id="outlined-basic" label="Make Todo" variant="outlined" style={{margin:"0px 5px"}} size="small" value={input}
          onChange={e=>setInput(e.target.value)} />
@@ -158,6 +159,7 @@ function App() {
           {tasks.map(item=> 
             <Task 
               key={item.id} 
+              isCompleted={item.isCompleted}
               taskText={item.taskText} 
               onClick={completeTask(item.id)}
             />)
@@ -167,7 +169,7 @@ function App() {
   ) : (
   <div className='flex flex-col justify-center items-center mb-20 font-bold text-2xl gap-y-3'>
   <div>----------------------------------------</div>
-  <div>Please connect to the Rinkeby Testnet</div>
+  <div>Please connect to the Sepolia Testnet</div>
   <div>and reload the page</div>
   <div>----------------------------------------</div>
   </div>
