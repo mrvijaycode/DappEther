@@ -1,1 +1,1 @@
-Open server folder for instruction
+Open server contact folder for instruction
